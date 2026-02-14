@@ -3,4 +3,5 @@ pandas
 numpy
 scikit-learn
 matplotlib
-tensorflow-cpu
+tensorflow-cpu==2.13.0
+h5py
