@@ -20,6 +20,95 @@ import matplotlib.pyplot as plt
 from tensorflow.keras.models import load_model
 import joblib  # ✅ Use joblib, not pickle
 
+
+import streamlit as st
+
+# ---- Custom CSS Styling ----
+st.markdown("""
+    <style>
+    
+    /* Main background */
+    .stApp {
+        background: linear-gradient(135deg, #f5f7fa, #c3cfe2);
+    }
+
+    /* Title Styling */
+    .main-title {
+        font-size: 40px;
+        font-weight: bold;
+        text-align: center;
+        color: #0A2647;
+        padding: 15px;
+        border-radius: 10px;
+        background-color: #ffffff;
+        box-shadow: 0px 4px 10px rgba(0,0,0,0.1);
+    }
+
+    /* Header Styling */
+    .section-header {
+        font-size: 26px;
+        font-weight: 600;
+        color: white;
+        background: linear-gradient(90deg, #2E8BC0, #145DA0);
+        padding: 10px 20px;
+        border-radius: 8px;
+        margin-top: 20px;
+    }
+
+/* Section Container Card */
+.card {
+    background-color: white;
+    padding: 25px;
+    border-radius: 12px;
+    box-shadow: 0px 6px 18px rgba(0,0,0,0.08);
+    margin-bottom: 25px;
+}
+
+/* Green AI Section Header */
+.ai-header {
+    font-size: 24px;
+    font-weight: 600;
+    color: white;
+    background: linear-gradient(90deg, #11998e, #38ef7d);
+    padding: 12px 20px;
+    border-radius: 8px;
+    margin-top: 20px;
+}
+
+/* Button Styling */
+div.stButton > button {
+    background: linear-gradient(90deg, #ff512f, #dd2476);
+    color: white;
+    font-weight: 600;
+    border-radius: 8px;
+    padding: 10px 20px;
+    border: none;
+}
+
+div.stButton > button:hover {
+    opacity: 0.85;
+}
+
+/* Suggestion Box */
+.suggestion-box {
+    background-color: #f0f9ff;
+    padding: 15px;
+    border-left: 6px solid #0284c7;
+    border-radius: 6px;
+    margin-top: 15px;
+}
+
+/* Chart container */
+.chart-box {
+    background-color: white;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0px 4px 12px rgba(0,0,0,0.06);
+    margin-top: 15px;
+}
+    </style>
+""", unsafe_allow_html=True)
+
 # -------------------------
 # 2️⃣ Load models and scalers
 # -------------------------
@@ -29,11 +118,11 @@ lstm_scaler = joblib.load("multivariate_lstm_scaler.pkl")
 # -------------------------
 # 3️⃣ Streamlit app title
 # -------------------------
-st.title("🩺 Advanced Diabetes Prediction System")
+st.markdown('<div class="main-title">🩺 Advanced Diabetes Prediction System</div>', unsafe_allow_html=True)
 # -------------------------
 # 1️⃣ Current Risk Prediction
 # -------------------------
-st.header("Current Risk Prediction")
+st.markdown('<div class="section-header">Current Risk Prediction</div>', unsafe_allow_html=True)
 
 # Load classifier model
 clf_model = pickle.load(open("classification_model.pkl", "rb"))
@@ -60,7 +149,8 @@ if st.button("Predict Current Risk"):
 # -------------------------
 # 2️⃣ 30-Day Multivariate Glucose Prediction
 # -------------------------
-st.header("Future 30 Days Glucose Prediction")
+st.markdown('<div class="ai-header">🔮 Future 30 Days Glucose Prediction</div>', unsafe_allow_html=True)
+st.markdown('<div class="card">', unsafe_allow_html=True)
 
 if st.button("Show Future Trend"):
     # Load multivariate LSTM model and scaler
@@ -86,14 +176,17 @@ if st.button("Show Future Trend"):
             sequence = np.roll(sequence, -1, axis=1)
             sequence[0, -1, 0] = pred[0][0]
 
-        # Display chart
-        st.subheader("📈 30-Day Glucose Forecast")
-        st.line_chart(future)
+            st.markdown('</div>', unsafe_allow_html=True)
 
+        # Display chart
+        st.markdown('<div class="chart-box"><h3>📈 30-Day Glucose Forecast</h3>', unsafe_allow_html=True)
+        st.line_chart(future)
+        st.markdown('</div>', unsafe_allow_html=True)
 # -------------------------
 # 3️⃣ Food Impact & Health Suggestions
 # -------------------------
-st.header("Food Impact & AI Health Suggestions")
+st.markdown('<div class="ai-header">🥗 Food Impact & AI Health Suggestions</div>', unsafe_allow_html=True)
+st.markdown('<div class="card">', unsafe_allow_html=True)
 
 food = st.text_input("Enter a food item:", "White Rice")
 steps = st.number_input("Steps today", value=3000)
@@ -110,6 +203,8 @@ if st.button("Get Food & Health Advice"):
                    steps=steps,
                    sleep=sleep,
                    stress=stress)
-    st.write("💡 AI Suggestions:")
+    st.markdown('<div class="suggestion-box">', unsafe_allow_html=True)
+    st.markdown("💡 **AI Suggestions:**")
     for tip in tips:
         st.write("- " + tip)
+        st.markdown('</div>', unsafe_allow_html=True)
